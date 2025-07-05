@@ -30,7 +30,7 @@ const LandingPage: React.FC = () => {
             onClick={() => navigate("/login")}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-cyan-700 hover:bg-cyan-800 px-8 py-3 rounded-full text-lg transition-all duration-300 cursor-pointer"
+            className="bg-cyan-700 hover:bg-cyan-800 px-9 py-3 rounded-full text-lg transition-all duration-300 cursor-pointer"
           >
             Login
           </motion.button>

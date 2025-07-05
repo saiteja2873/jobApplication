@@ -7,6 +7,7 @@ import LandingPage from "./pages/landing.tsx";
 import Dashboard from "./pages/dashboard.tsx";
 import { ToastContainer } from "react-toastify";
 import RequireAuth from "./components/requireAuth";
+import EditProfile from "./pages/edit.tsx";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Registeri />} />
+        <Route path ="/edit" element = {<EditProfile />} />
         <Route
           path="/dashboard"
           element={
