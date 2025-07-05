@@ -3,6 +3,7 @@ import type { FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 interface RegisterFormData {
   name: string;
@@ -29,20 +30,37 @@ function Registeri() {
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords don't match");
       return;
     }
-
-    toast.success("Registered successfully");
     setLoading(true);
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
-  };
 
+
+    try {
+      const res = await axios.post("http://localhost:3000/api/auth/register", {
+        name : formData.name,
+        email : formData.email,
+        password : formData.password,
+      });
+      localStorage.setItem("token", res.data.token);
+
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      toast.success("Registered successfully");
+      setTimeout(() => {
+        navigate("/login");
+        }, 1000);
+  }catch(error: any){
+    const message = error.response?.data?.message || "Something went wrong. Please try again.";
+    toast.error(message);
+    console.error("Registration error:", error);
+  } finally{
+    setLoading(false);
+  }
+}
   return (
     <motion.div
       className="bg-gray-950 min-h-screen flex items-center justify-center px-4"
