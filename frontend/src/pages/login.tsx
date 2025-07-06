@@ -148,13 +148,13 @@ const Login: React.FC = () => {
             >
               REGISTER
             </motion.button>
-            <motion.a
+            <motion.button
               whileHover={{ scale: 1.05 }}
-              href="#"
+              onClick={() => navigate("/forgot-password")}
               className="hover:text-amber-200 transition underline cursor-pointer"
             >
               FORGOT PASSWORD
-            </motion.a>
+            </motion.button>
           </div>
         </div>
       </motion.div>

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -125,5 +127,53 @@ export const updateUserProfile = async (req: Request, res: Response): Promise<vo
   } catch (error) {
     // console.log("Update Error: ", error)
     res.status(500).json({ success: false, message: "Update failed", error });
+  }
+};
+
+
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  const { email } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      res.status(404).json({ message: "User with this email does not exist" });
+      return;
+    }
+
+    // Generate a temporary random password (8 characters)
+    const tempPassword = crypto.randomBytes(4).toString("hex");
+
+    // Hash it before storing
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    // Send email with temporary password
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Your App Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your Temporary Password",
+      text: `Hello ${user.name},\n\nYour temporary password is: ${tempPassword}\n\nPlease log in and change your password immediately.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Temporary password sent to your email." });
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ message: "Failed to send temporary password", error });
   }
 };

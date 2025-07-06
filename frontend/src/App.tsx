@@ -8,6 +8,7 @@ import Dashboard from "./pages/dashboard.tsx";
 import { ToastContainer } from "react-toastify";
 import RequireAuth from "./components/requireAuth";
 import EditProfile from "./pages/edit.tsx";
+import ForgotPass from "./pages/forgotPass.tsx";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Registeri />} />
         <Route path ="/edit" element = {<EditProfile />} />
+        <Route path="/forgot-password" element={<ForgotPass />} />
         <Route
           path="/dashboard"
           element={
